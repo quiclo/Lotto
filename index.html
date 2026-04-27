@@ -1,0 +1,2637 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>Lotto Analyse PRO</title>
+    <link rel="icon" href="data:,">
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 10px;
+            background: #eef1f4;
+        }
+
+        .compact {
+            width: auto !important; /* 🔥 KEIN Strecken mehr */
+        }
+
+        .controls {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+            .controls button {
+                margin-top: 5px;
+            }
+
+        .controls {
+            text-align: left;
+        }
+
+        .rangebox {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .rangebox input {
+                width: 60px;
+                text-align: center;
+            }
+        /* ===== TAB STYLE INPUTS ===== */
+        .tabrow {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .tabfield {
+            background: #f0f0f0;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column; /* 🔥 DAS IST DER FIX */
+            align-items: flex-start; /* 🔥 wichtig */
+            gap: 2px;
+            width: 150px;
+            padding: 4px 6px; /* 🔥 Höhe automatisch */
+        }
+
+            .tabfield div {
+                font-size: 11px;
+                line-height: 12px;
+                margin-bottom: 2px;
+                text-align: center;
+                width: 100%;
+            }
+
+            .tabfield div {
+                font-size: 11px;
+                line-height: 12px;
+                margin-bottom: 2px;
+                text-align: center;
+                width: 100%;
+            }
+
+        .tu-table {
+            width: auto; /* 🔥 wichtig: kein Strecken */
+        }
+
+            .tu-table th,
+            .tu-table td {
+                width: 40px;
+                min-width: 40px;
+                max-width: 40px;
+                padding: 1px;
+            }
+
+
+        .tabfield input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            font-size: 16px; /* 🔥 größer */
+            font-weight: bold; /* 🔥 fett */
+            text-align: center;
+            height: 22px;
+            margin-top: 2px;
+        }
+
+        /* Hover wie Buttons */
+        .tabfield:hover {
+            border-color: #2ecc71;
+            box-shadow: 0 0 3px rgba(46,204,113,0.4);
+        }
+
+        .filterblock div {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        button:hover {
+            background: #58d68d; /* heller grün */
+            color: white;
+        }
+
+        button.active {
+            background: #27ae60; /* kräftiger grün */
+            color: white;
+        }
+
+        .row {
+            display: block; /* 🔥 DAS IST DER FIX */
+            margin-bottom: 4px;
+        }
+
+            .row input {
+                width: 22px;
+                margin: 1px;
+                text-align: center;
+            }
+
+        .cell {
+            width: 22px;
+            margin: 1px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .controls .tabfield input {
+            background: transparent !important;
+            border: none;
+            outline: none;
+            width: 100%;
+            height: 100%;
+            font-size: 12px;
+            margin: 0;
+        }
+
+
+        .tu-table input {
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 11px;
+            padding: 0;
+        }
+
+        .main {
+            display: flex;
+            gap: 20px;
+        }
+
+        .tippfeld input {
+            width: 28px;
+            height: 28px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #bbb;
+        }
+
+            .tippfeld input.active {
+                background: #2ecc71;
+                color: white;
+            }
+
+
+
+        .tbox {
+            background: #ffffff;
+            border: 2px solid #2ecc71;
+            border-radius: 10px;
+            padding: 8px; /* kleiner */
+            margin-top: 5px; /* kleiner */
+            font-size: 12px; /* kleiner */
+            min-width: 200px; /* schmaler */
+        }
+
+        .thead {
+            font-weight: bold;
+            font-size: 15px;
+            border-bottom: 2px solid #2ecc71;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+        }
+
+        .trow {
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 3px;
+            text-align: center;
+        }
+
+        th {
+            background: #2ecc71;
+            color: white;
+        }
+
+        th {
+            background: #2ecc71;
+            color: white;
+        }
+        /* 🔵 LOADER */
+        .loader {
+            width: 10px;
+            height: 10px;
+            border: 2px solid #ccc;
+            border-top: 2px solid #2ecc71;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .tooltip {
+            position: relative;
+        }
+
+            .tooltip .tooltiptext {
+                visibility: hidden;
+                background-color: #2ecc71;
+                color: white;
+                text-align: center;
+                padding: 6px;
+                border-radius: 6px;
+                position: absolute;
+                z-index: 10;
+                bottom: 125%;
+                left: 50%;
+                transform: translateX(-50%);
+                white-space: normal;
+                width: 160px;
+                font-size: 12px;
+            }
+
+            .tooltip:hover .tooltiptext {
+                visibility: visible;
+            }
+
+
+    </style>
+
+</head>
+
+                <div id="infoPopup" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    z-index:999;
+">
+
+                    <div style="
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        background:#fff;
+        padding:20px;
+        border-radius:10px;
+        width:420px;
+        box-shadow:0 0 15px rgba(0,0,0,0.4);
+        text-align:center;
+        font-size:14px;
+        line-height:1.5;
+    ">
+
+                        <div style="font-size:16px; font-weight:bold; margin-bottom:10px;">
+                            INFO
+                        </div>
+
+                        Das Programm <b>Lotto Analyse PRO</b> liefert nur mit echten bisher gezogenen Lottozahlen, die gewünschten Ergebnisse.<br><br>
+                        Die historischen Daten (Samstag + Mittwoch) stehen für eine geringe Gebühr, ONLINE per Download zur Verfügung.<br><br>
+                        1 Monat = 2 € *** 3 Monate = 5 € *** 12 Monate = 10 €
+
+                        <br><br>
+                        <button onclick="hideInfo()" style="padding:5px 15px;">
+                            Schließen
+                        </button>
+
+                    </div>
+                </div>
+
+<body>
+
+    <h4 style="margin:2px 0; font-size:14px;">Lotto Analyse PRO</h4>
+
+
+
+    <div class="controls">
+
+        <!-- ===== REIHE 1 ===== -->
+
+        <div class="tabrow">
+
+            <div class="tabfield" style="background: rgb(213, 245, 227); border-color: rgb(39, 174, 96);">
+                <div style="font-size:11px;">Anzahl</div>
+                <div class="tooltip">
+                    <input id="anzahl" value="12">
+                    <span class="tooltiptext">Anzahl der Tippreihen die erzeugt werden</span>
+                </div>
+            </div>
+
+            <div class="tabfield">
+                <div style="font-size:11px;">Kombi-Nr.</div>
+                <div class="rangebox">
+                    <div class="tooltip">
+                        <input id="kombi_von" placeholder="von">
+                        <span class="tooltiptext">keine Eingabe = alle möglichen Kombinationen (Startwert)</span>
+                    </div>
+                    <span>-</span>
+                    <div class="tooltip">
+                        <input id="kombi_bis" placeholder="bis">
+                        <span class="tooltiptext">Es werden nur Kombinationen ermittelt, die sich innerhalb des eingegebenen Bereiches befinden</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabfield">
+                <div style="font-size:11px;">Kombi-Nr. Endziffer "?" = beliebige Zahl</div>
+                <div class="tooltip">
+                    <input id="endz">
+                    <span class="tooltiptext">Die Endziffer der Kombi-Nr. kann selektiert werden (z.B. 670? oder 6?70)</span>
+                </div>
+            </div>
+
+            <div class="tabfield">
+                <div style="font-size:11px;">Abstand</div>
+                <div class="tooltip">
+                    <input id="abstand" placeholder="">
+                    <span class="tooltiptext">Es werden nur Zahlen ermittelt, die alle hier eingegebenen Abstände erfüllen</span>
+                </div>
+            </div>
+
+        </div>
+        <!-- ===== REIHE 2 ===== -->
+        <div class="tabrow">
+
+            <div class="tabfield">
+                <div style="font-size:11px;">Pflichtzahlen</div>
+                <div class="tooltip">
+                    <input id="pflicht" placeholder="">
+                    <span class="tooltiptext">Hier eingegebene Zahlen sind in jeder Tippreihe enthalten</span>
+                </div>
+            </div>
+
+            <div class="tabfield">
+                <div style="font-size:11px;">Ausschlusszahlen</div>
+                <div class="tooltip">
+                    <input id="sperre" placeholder="">
+                    <span class="tooltiptext">Hier eingegebene Zahlen sind in keiner Tippreihe enthalten</span>
+                </div>
+            </div>
+
+            <div class="tabfield">
+                <div style="font-size:11px;">Summe</div>
+                <div class="rangebox">
+                    <div class="tooltip">
+                        <input id="sum_von" placeholder="von">
+                        <span class="tooltiptext">keine Eingabe = alle möglichen Summen von 21-279</span>
+                    </div>
+                    <span>-</span>
+                    <div class="tooltip">
+                        <input id="sum_bis" placeholder="bis">
+                        <span class="tooltiptext">Es werden nur Kombinationen ermittelt, die innerhalb des eingegebenen Summenbereiches liegen</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabfield">
+                <div style="font-size:11px;">Trefferabstand aus der Historie</div>
+                <div class="rangebox">
+                    <div class="tooltip">
+                        <input id="gap_von" placeholder="von">
+                        <span class="tooltiptext">Minimaler Abstand zur nächsten Kombination</span>
+                    </div>
+                    <span>-</span>
+                    <div class="tooltip">
+                        <input id="gap_bis" placeholder="bis">
+                        <span class="tooltiptext">Maximaler Abstand zur nächsten Kombination</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>      <!-- ===== NEUE FILTER ===== -->
+
+        <div style="display:flex; gap:20px;">
+
+            <div class="filterblock">
+                <span class="tooltip">
+                    Tiefe Zahlen (1–24)
+                    <span class="tooltiptext">Anzahl der Zahlen im Bereich von 1 bis 24</span>
+                </span>
+                <div id="low">
+                    <button onclick="this.classList.toggle('active')" data-val="0">0</button>
+                    <button onclick="this.classList.toggle('active')" data-val="1">1</button>
+                    <button onclick="this.classList.toggle('active')" data-val="2">2</button>
+                    <button onclick="this.classList.toggle('active')" data-val="3">3</button>
+                    <button onclick="this.classList.toggle('active')" data-val="4">4</button>
+                    <button onclick="this.classList.toggle('active')" data-val="5">5</button>
+                    <button onclick="this.classList.toggle('active')" data-val="6">6</button>
+                </div>
+            </div>
+
+            <div class="filterblock">
+                <span class="tooltip">
+                    Gerade Zahlen
+                    <span class="tooltiptext">Anzahl der geraden Zahlen</span>
+                </span>
+                <div id="even">
+                    <button onclick="this.classList.toggle('active')" data-val="0">0</button>
+                    <button onclick="this.classList.toggle('active')" data-val="1">1</button>
+                    <button onclick="this.classList.toggle('active')" data-val="2">2</button>
+                    <button onclick="this.classList.toggle('active')" data-val="3">3</button>
+                    <button onclick="this.classList.toggle('active')" data-val="4">4</button>
+                    <button onclick="this.classList.toggle('active')" data-val="5">5</button>
+                    <button onclick="this.classList.toggle('active')" data-val="6">6</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="display:flex; gap:20px;">
+
+
+            <!-- WAAGERECHT -->
+            <div class="filterblock">
+                <span class="tooltip">
+                    Waagerecht (1–6)
+                    <span class="tooltiptext">Anzahl belegter Reihen im 7x7 Feld</span>
+                </span>
+                <div class="button-group" id="waag">
+                    <button onclick="this.classList.toggle('active')" data-val="1">1</button>
+                    <button onclick="this.classList.toggle('active')" data-val="2">2</button>
+                    <button onclick="this.classList.toggle('active')" data-val="3">3</button>
+                    <button onclick="this.classList.toggle('active')" data-val="4">4</button>
+                    <button onclick="this.classList.toggle('active')" data-val="5">5</button>
+                    <button onclick="this.classList.toggle('active')" data-val="6">6</button>
+                </div>
+            </div>
+
+            <!-- SENKRECHT -->
+            <div class="filterblock">
+                <span class="tooltip">
+                    Senkrecht (1–6)
+                    <span class="tooltiptext">Anzahl belegter Spalten im 7x7 Feld</span>
+                </span>
+                <div class="button-group" id="senk">
+                    <button onclick="this.classList.toggle('active')" data-val="1">1</button>
+                    <button onclick="this.classList.toggle('active')" data-val="2">2</button>
+                    <button onclick="this.classList.toggle('active')" data-val="3">3</button>
+                    <button onclick="this.classList.toggle('active')" data-val="4">4</button>
+                    <button onclick="this.classList.toggle('active')" data-val="5">5</button>
+                    <button onclick="this.classList.toggle('active')" data-val="6">6</button>
+                </div>
+            </div>
+
+            <!-- RAND -->
+            <div class="filterblock">
+                <span class="tooltip">
+                    Rand (1–6)
+                    <span class="tooltiptext">Anzahl der Zahlen am Rand des 7x7 Feldes (24 Randzahlen)</span>
+                </span>
+                <div class="button-group" id="rand">
+                    <button onclick="this.classList.toggle('active')" data-val="1">1</button>
+                    <button onclick="this.classList.toggle('active')" data-val="2">2</button>
+                    <button onclick="this.classList.toggle('active')" data-val="3">3</button>
+                    <button onclick="this.classList.toggle('active')" data-val="4">4</button>
+                    <button onclick="this.classList.toggle('active')" data-val="5">5</button>
+                    <button onclick="this.classList.toggle('active')" data-val="6">6</button>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="filterblock">
+            <span class="tooltip">
+                Zehnergruppen
+                <span class="tooltiptext">Verteilung der Zahlen auf Bereiche (1–9,11–19,21-29,30-39,40-49)</span>
+            </span>
+            <div id="zp">
+                <button onclick="this.classList.toggle('active')" data-val="21111">21111</button>
+                <button onclick="this.classList.toggle('active')" data-val="2211">2211</button>
+                <button onclick="this.classList.toggle('active')" data-val="3111">3111</button>
+                <button onclick="this.classList.toggle('active')" data-val="222">222</button>
+                <button onclick="this.classList.toggle('active')" data-val="321">321</button>
+                <button onclick="this.classList.toggle('active')" data-val="411">411</button>
+                <button onclick="this.classList.toggle('active')" data-val="33">33</button>
+                <button onclick="this.classList.toggle('active')" data-val="42">42</button>
+                <button onclick="this.classList.toggle('active')" data-val="51">51</button>
+            </div>
+        </div>
+
+        <div class="filterblock">
+            <span class="tooltip">
+                Endziffern (0-9)
+                <span class="tooltiptext">Anzahl unterschiedliche Endziffern</span>
+            </span>
+            <div id="endcount">
+                <!-- ⚠️ HIER WAR FALSCH (zp) -->
+
+                <button onclick="this.classList.toggle('active')" data-val="0">0</button>
+                <button onclick="this.classList.toggle('active')" data-val="1">1</button>
+                <button onclick="this.classList.toggle('active')" data-val="2">2</button>
+                <button onclick="this.classList.toggle('active')" data-val="3">3</button>
+                <button onclick="this.classList.toggle('active')" data-val="4">4</button>
+                <button onclick="this.classList.toggle('active')" data-val="5">5</button>
+                <button onclick="this.classList.toggle('active')" data-val="6">6</button>
+                <button onclick="this.classList.toggle('active')" data-val="7">7</button>
+                <button onclick="this.classList.toggle('active')" data-val="8">8</button>
+                <button onclick="this.classList.toggle('active')" data-val="9">9</button>
+
+            </div>
+        </div>
+
+        <div class="filterblock">
+            <span class="tooltip">
+                Anzahl der Endziffern
+                <span class="tooltiptext">Es werden nur Zahlen ermittelt - deren Endziffer auch angegeben wurde</span>
+            </span>
+            <div id="endzButtons">
+                <button onclick="this.classList.toggle('active')" data-val="111111">111111</button>
+                <button onclick="this.classList.toggle('active')" data-val="21111">21111</button>
+                <button onclick="this.classList.toggle('active')" data-val="2211">2211</button>
+                <button onclick="this.classList.toggle('active')" data-val="222">222</button>
+                <button onclick="this.classList.toggle('active')" data-val="3111">3111</button>
+                <button onclick="this.classList.toggle('active')" data-val="321">321</button>
+                <button onclick="this.classList.toggle('active')" data-val="33">33</button>
+                <button onclick="this.classList.toggle('active')" data-val="411">411</button>
+                <button onclick="this.classList.toggle('active')" data-val="42">42</button>
+                <button onclick="this.classList.toggle('active')" data-val="51">51</button>
+            </div>
+
+
+
+        </div>
+        <div class="filterblock">
+            <span class="tooltip">
+                Nachbarn
+                <span class="tooltiptext">Nachbarn von direkt aufeinanderfolgenden Zahlen</span>
+            </span>
+            <div id="nb">
+                <button onclick="this.classList.toggle('active')" data-val="111111">111111</button>
+                <button onclick="this.classList.toggle('active')" data-val="21111">21111</button>
+                <button onclick="this.classList.toggle('active')" data-val="2211">2211</button>
+                <button onclick="this.classList.toggle('active')" data-val="222">222</button>
+                <button onclick="this.classList.toggle('active')" data-val="3111">3111</button>
+                <button onclick="this.classList.toggle('active')" data-val="321">321</button>
+                <button onclick="this.classList.toggle('active')" data-val="33">33</button>
+                <button onclick="this.classList.toggle('active')" data-val="411">411</button>
+                <button onclick="this.classList.toggle('active')" data-val="42">42</button>
+                <button onclick="this.classList.toggle('active')" data-val="51">51</button>
+                <button onclick="this.classList.toggle('active')" data-val="6">6</button>
+            </div>
+
+        </div>
+        <table class="tu-table compact" style="border-collapse:collapse; margin-top:10px;">
+
+            <!-- ===== ÜBERSCHRIFT ===== -->
+            <tbody>
+                <tr>
+                    <th style="width:25px;">
+                        <span class="tooltip">
+                            ?
+                            <span class="tooltiptext">Hier werden Filter für Treffer (T) und Abstand (U) eingestellt</span>
+                        </span>
+                    </th>
+
+                    <th>T0</th>
+                    <th>T1</th>
+                    <th>T2</th>
+                    <th>T3</th>
+                    <th>T4</th>
+                    <th>T5</th>
+                    <th>T6</th>
+
+                    <th>U0</th>
+                    <th>U1</th>
+                    <th>U2</th>
+                    <th>U3</th>
+                    <th>U4</th>
+                    <th>U5</th>
+                    <th>U6</th>
+                    <th>GAP</th>
+                </tr>
+
+                <!-- ===== = ===== -->
+                <tr>
+                    <td>=</td>
+
+                    <td><input id="eq_t0"></td>
+                    <td><input id="eq_t1"></td>
+                    <td><input id="eq_t2"></td>
+                    <td><input id="eq_t3"></td>
+                    <td><input id="eq_t4"></td>
+                    <td><input id="eq_t5"></td>
+                    <td><input id="eq_t6"></td>
+
+                    <td><input id="eq_u0"></td>
+                    <td><input id="eq_u1"></td>
+                    <td><input id="eq_u2"></td>
+                    <td><input id="eq_u3"></td>
+                    <td><input id="eq_u4"></td>
+                    <td><input id="eq_u5"></td>
+                    <td><input id="eq_u6"></td>
+
+                    <td><input id="eq_gap"></td>
+                </tr>
+                <!-- ===== ≤ ===== -->
+                <tr>
+                    <td>≤</td>
+
+                    <td><input id="le_t0"></td>
+                    <td><input id="le_t1"></td>
+                    <td><input id="le_t2"></td>
+                    <td><input id="le_t3"></td>
+                    <td><input id="le_t4"></td>
+                    <td><input id="le_t5"></td>
+                    <td><input id="le_t6"></td>
+
+                    <td><input id="le_u0"></td>
+                    <td><input id="le_u1"></td>
+                    <td><input id="le_u2"></td>
+                    <td><input id="le_u3"></td>
+                    <td><input id="le_u4"></td>
+                    <td><input id="le_u5"></td>
+                    <td><input id="le_u6"></td>
+
+                    <td><input id="le_gap"></td>
+                </tr>
+                <!-- ===== ≥ ===== -->
+                <tr>
+                    <td>≥</td>
+
+                    <td><input id="ge_t0"></td>
+                    <td><input id="ge_t1"></td>
+                    <td><input id="ge_t2"></td>
+                    <td><input id="ge_t3"></td>
+                    <td><input id="ge_t4"></td>
+                    <td><input id="ge_t5"></td>
+                    <td><input id="ge_t6"></td>
+
+                    <td><input id="ge_u0"></td>
+                    <td><input id="ge_u1"></td>
+                    <td><input id="ge_u2"></td>
+                    <td><input id="ge_u3"></td>
+                    <td><input id="ge_u4"></td>
+                    <td><input id="ge_u5"></td>
+                    <td><input id="ge_u6"></td>
+
+                    <td><input id="ge_gap"></td>
+                </tr>
+
+            </tbody>
+        </table>
+        <button onclick="start()" style="background:#007bff; color:white;">RUN</button>
+        <button onclick="stopRun()">STOP</button>
+        <button onclick="resumeRun()">WEITER</button>
+
+        <button onclick="showInfo()" style="background:#f1c40f; color:black; margin-left:10px;">
+            INFO
+        </button>
+        <span class="tooltip">
+            <button onclick="clearMainInputs()">RED</button>
+            <span class="tooltiptext">
+                Löscht Eingaben im Eingabefeld
+            </span>
+        </span>
+        <span class="tooltip">
+            <button onclick="resetFilters()">RBF</button>
+            <span class="tooltiptext">
+                Löscht alle aktivierten Filter-Buttons
+            </span>
+        </span>
+
+        <span class="tooltip">
+            <button onclick="clearRHF()">RHF</button>
+            <span class="tooltiptext">
+                löscht alle Eingaben im T/U Filter (= ≤ ≥)
+            </span>
+        </span>
+
+        <span class="tooltip">
+            <button onclick="undoFilters()">UNDO</button>
+            <span class="tooltiptext">
+                Letzte Änderung rückgängig machen
+            </span>
+        </span>
+        <button onclick="exportTXT()">TXT</button>
+        <button onclick="exportCSV()">CSV</button>
+        <button onclick="window.print()">PRINT</button>
+        <span class="tooltip">
+            <button onclick="makeQR()">QRCODE</button>
+            <span class="tooltiptext">
+                Ausgabe von 12 Lottoreihen mit Trefferangabe
+            </span>
+        </span>
+
+        <span class="tooltip">
+            <button onclick="showGapList()">GAP-LIST</button>
+            <span class="tooltiptext">
+                Ausgabe von Trefferabständen
+            </span>
+        </span>
+        <button onclick="showAbstand1List()">ABSTAND1</button>
+        <button onclick="cls()">CLS</button><br>
+        <input type="file" id="fileInput" accept=".qlm">
+        <button onclick="loadQLM()">Datei.QLM LADEN</button>
+
+
+        <span id="status" style="font-weight:bold; margin-left:10px;"> </span>
+        <div id="loader" class="loader" style="margin-left: 5px; display: none;"></div>
+
+
+        <div class="main">
+
+            <div class="tippfeld">
+                <table id="tippTable"><tr><td><input type="text" readonly="readonly" style="cursor: pointer;" value="1"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="2"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="3"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="4"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="5"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="6"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="7"></td></tr><tr><td><input type="text" readonly="readonly" style="cursor: pointer;" value="8"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="9"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="10"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="11"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="12"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="13"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="14"></td></tr><tr><td><input type="text" readonly="readonly" style="cursor: pointer;" value="15"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="16"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="17"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="18"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="19"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="20"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="21"></td></tr><tr><td><input type="text" readonly="readonly" style="cursor: pointer;" value="22"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="23"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="24"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="25"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="26"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="27"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="28"></td></tr><tr><td><input type="text" readonly="readonly" style="cursor: pointer;" value="29"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="30"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="31"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="32"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="33"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="34"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="35"></td></tr><tr><td><input type="text" readonly="readonly" style="cursor: pointer;" value="36"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="37"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="38"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="39"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="40"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="41"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="42"></td></tr><tr><td><input type="text" readonly="readonly" style="cursor: pointer;" value="43"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="44"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="45"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="46"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="47"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="48"></td><td><input type="text" readonly="readonly" style="cursor: pointer;" value="49"></td></tr></table>
+            </div>
+
+            <div class="tbox">
+                <div id="drawCount"></div>
+                <div id="abstand1Anzeige"></div>
+                <div id="tuBox"></div>
+
+            </div>
+
+            <div id="qrbox" class="tbox"></div>
+
+
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+
+                    <th onclick="sortTable(0)">#</th>
+                    <th onclick="sortTable(1)">Z1</th>
+                    <th onclick="sortTable(2)">Z2</th>
+                    <th onclick="sortTable(3)">Z3</th>
+                    <th onclick="sortTable(4)">Z4</th>
+                    <th onclick="sortTable(5)">Z5</th>
+                    <th onclick="sortTable(6)">Z6</th>
+                    <th onclick="sortTable(7)">SUM</th>
+                    <th onclick="sortTable(8)">Kombi</th>
+                    <th onclick="sortTable(9)">GAP</th>
+                    <th onclick="sortTable(10)">T0</th>
+                    <th onclick="sortTable(11)">T1</th>
+                    <th onclick="sortTable(12)">T2</th>
+                    <th onclick="sortTable(13)">T3</th>
+                    <th onclick="sortTable(14)">T4</th>
+                    <th onclick="sortTable(15)">T5</th>
+                    <th onclick="sortTable(16)">T6</th>
+                    <th onclick="sortTable(17)">U0</th>
+                    <th onclick="sortTable(18)">U1</th>
+                    <th onclick="sortTable(19)">U2</th>
+                    <th onclick="sortTable(20)">U3</th>
+                    <th onclick="sortTable(21)">U4</th>
+                    <th onclick="sortTable(22)">U5</th>
+                    <th onclick="sortTable(23)">U6</th>
+                </tr>
+            </thead>
+            <tbody id="out"></tbody>
+        </table>
+
+        <div id="debug" style="margin-top:20px;"></div>
+
+        <script type="text/javascript">
+            window.onerror = function (msg, url, line) {
+                alert("FEHLER: " + msg + " ZEILE: " + line);
+            };
+
+            // @ts-nocheck
+            let sortDir = {};
+            let lastSortCol = -1;
+            let HISTORY = [];
+            let undoStack = [];
+            let lastState = null;
+            function saveFullState() {
+
+                lastState = {
+
+                    inputs: Array.from(document.querySelectorAll(".tabfield input"))
+                        .map(inp => ({ id: inp.id, value: inp.value })),
+
+                    buttons: Array.from(document.querySelectorAll(".filterblock button"))
+                        .map(btn => ({
+                            id: btn.parentElement.id,
+                            val: btn.dataset.val,
+                            active: btn.classList.contains("active")
+                        })),
+
+                    tu: Array.from(document.querySelectorAll(".tu-table input"))
+                        .map(inp => ({ id: inp.id, value: inp.value }))
+                };
+            }
+
+
+            function sortTable(col) {
+
+                let tbody = document.getElementById("out");
+                let rows = Array.from(tbody.querySelectorAll("tr"));
+
+                // Richtung wechseln
+                sortDir[col] = !sortDir[col];
+
+                rows.sort((a, b) => {
+
+                    let A = a.children[col].innerText.trim();
+                    let B = b.children[col].innerText.trim();
+
+                    // Zahlen erkennen
+                    let numA = parseFloat(A.replace(",", "."));
+                    let numB = parseFloat(B.replace(",", "."));
+
+                    if (!isNaN(numA) && !isNaN(numB)) {
+                        return sortDir[col] ? numA - numB : numB - numA;
+                    }
+
+                    // Textvergleich
+                    return sortDir[col]
+                        ? A.localeCompare(B)
+                        : B.localeCompare(A);
+                });
+
+                // neu einsetzen
+                tbody.innerHTML = "";
+                rows.forEach(r => tbody.appendChild(r));
+
+                // Pfeile aktualisieren
+                let ths = tbody.closest("table").querySelectorAll("th");
+
+                ths.forEach(th => {
+                    th.innerHTML = th.innerHTML.replace(" ▲", "").replace(" ▼", "");
+                });
+
+
+                let th = ths[col];
+
+                th.innerHTML += sortDir[col] ? " ▲" : " ▼";
+            }
+
+            window.state = window.state || {};
+
+            let running = false;
+            let stopped = false;
+
+
+
+
+            document.getElementById("status").innerHTML =
+                "<span style='color:red; font-size:14px;'>⚠ keine Historie geladen</span>";
+
+
+            function randomKombi() {
+
+                const max = 13983816;
+                const limit = Math.floor(4294967296 / max) * max;
+
+                let rand;
+                const array = new Uint32Array(1);
+
+                do {
+                    crypto.getRandomValues(array);
+                    rand = array[0];
+                } while (rand >= limit);
+
+                return (rand % max) + 1;
+            }
+
+            function nCk(n, k) {
+                if (k < 0 || k > n) return 0;
+                if (k === 0 || k === n) return 1;
+                k = Math.min(k, n - k);
+                let r = 1;
+                for (let i = 1; i <= k; i++)r = r * (n - k + i) / i;
+                return Math.round(r);
+            }
+
+            function berechneKombiNr(nums) {
+                let sum = 0;
+                for (let i = 0; i < 6; i++) {
+                    sum += nCk(49 - nums[i], 6 - i);
+                }
+                return nCk(49, 6) - sum;
+            }
+
+            function combo(idx) {
+                let r = [], x = idx - 1, s = 1;
+                for (let k = 6; k >= 1; k--) {
+                    for (let j = s; j <= 49; j++) {
+                        let c = nCk(49 - j, k - 1);
+                        if (x < c) { r.push(j); s = j + 1; break; }
+                        x -= c;
+                    }
+                }
+                return r;
+            }
+
+            // ===== NEUE FILTER FUNKTIONEN =====
+
+            function countLow(nums) {
+                return nums.filter(n => Number(n) <= 24).length;
+            }
+
+            function countEven(nums) {
+                return nums.filter(n => n % 2 === 0).length;
+            }
+
+            function getZehnerPattern(nums) {
+
+                let g1 = 0; // 1–9
+                let g2 = 0; // 10–19
+                let g3 = 0; // 20–29
+                let g4 = 0; // 30–39
+                let g5 = 0; // 40–49
+
+                for (let n of nums) {
+                    n = Number(n);
+
+                    if (n <= 9) g1++;
+                    else if (n <= 19) g2++;
+                    else if (n <= 29) g3++;
+                    else if (n <= 39) g4++;
+                    else g5++;
+                }
+
+                let arr = [g1, g2, g3, g4, g5];
+
+                return arr
+                    .filter(x => x > 0)
+                    .sort((a, b) => b - a)
+                    .join("");
+            }
+
+            function getEndPattern(nums) {
+
+                let counts = {};
+
+                for (let n of nums) {
+                    let e = n % 10;
+                    counts[e] = (counts[e] || 0) + 1;
+                }
+
+                let arr = Object.values(counts);
+
+                // 👉 wichtig: auf 6 auffüllen
+
+
+                return arr
+                    .sort((a, b) => b - a)
+                    .join("");
+            }
+            function getNeighborPattern(nums) {
+                let sorted = [...nums].sort((a, b) => a - b);
+                let groups = [];
+                let count = 1;
+
+                for (let i = 1; i < sorted.length; i++) {
+                    if (sorted[i] === sorted[i - 1] + 1) {
+                        count++;
+                    } else {
+                        groups.push(count);
+                        count = 1;
+                    }
+                }
+                groups.push(count);
+
+                return groups.sort((a, b) => b - a).join("");
+            }
+
+            function getSelected(id) {
+                return Array.from(document.querySelectorAll("#" + id + " .active"))
+                    .map(e => e.dataset.val);
+            }
+
+
+            function updateButtons() {
+
+                let btnRun = document.getElementById("btnRun");
+                let btnStop = document.getElementById("btnStop");
+                let btnWeiter = document.getElementById("btnWeiter");
+                let btnCls = document.getElementById("btnCls");
+
+                // RUN nur wenn nichts läuft
+                btnRun.disabled = running;
+
+                // STOP nur wenn läuft und nicht pausiert
+                btnStop.disabled = !running || stopped;
+
+                // WEITER nur wenn pausiert
+                btnWeiter.disabled = !stopped;
+
+                // CLS immer möglich
+                btnCls.disabled = false;
+            }
+
+
+            function calcTU(row) {
+
+                let T = [0, 0, 0, 0, 0, 0, 0];
+                let U = [0, 0, 0, 0, 0, 0, 0];
+
+                let found = [false, false, false, false, false, false, false];
+
+                if (!row || row.length === 0) return { T, U };
+
+                // 🔍 DEBUG: letzte Ziehung anzeigen
+                if (HISTORY && HISTORY.length > 0) {
+                    let last = HISTORY[HISTORY.length - 1];
+
+                    console.log("LETZTE ZIEHUNG:");
+                    console.log("Zahlen:", last.zahlen);
+                    console.log("Kombi:", last.kombi);
+                }
+
+                // 👉 Treffer zählen
+                for (let h of HISTORY) {
+
+                    let k = 0;
+
+                    for (let z of row) {
+                        if (h.zahlen.includes(z)) k++;
+                    }
+
+                    if (k > 6) k = 6;
+
+                    T[k]++;
+                }
+
+
+                // 👉 Abstand (U) = Ziehungen seit letztem Treffer
+                // 👉 Abstand (U) = Ziehungen seit letztem Treffer (mindestens k)
+
+                // 👉 Abstand (U) = letzte Ziehung mit GENAU k Treffern
+                // 🔥 U korrekt nach deiner Definition (von hinten!)
+
+                // 🔥 U-WERTE KORREKT BERECHNEN (EINMAL RÜCKWÄRTS!)
+                U = [0, 0, 0, 0, 0, 0, 0];
+
+                for (let dist = 1; dist <= HISTORY.length; dist++) {
+
+                    let h = HISTORY[HISTORY.length - dist];
+
+                    let hits = 0;
+
+                    for (let z of row) {
+                        if (h.zahlen.includes(z)) hits++;
+                    }
+
+                    // 👉 nur erstes Auftreten speichern
+                    if (U[hits] === 0) {
+                        U[hits] = dist;
+                    }
+
+                    // 👉 wenn alle gefunden → fertig
+                    if (U[0] && U[1] && U[2] && U[3] && U[4] && U[5] && U[6]) break;
+                }
+
+                return { T, U };
+            }
+
+
+
+            function updateTU() {
+
+                let tip = [];
+
+                document.querySelectorAll(".tippfeld input").forEach(e => {
+                    if (e.classList.contains("active")) {
+                        tip.push(parseInt(e.value));
+                    }
+                });
+
+                let res = calcTU(tip);
+                let T = res.T;
+
+                let abstandText = "";
+                let treffer = 0;
+                let color = "black";
+
+                if (tip.length === 6 && HISTORY && HISTORY.length > 0) {
+
+                    let Z = [null, ...tip];
+
+                    let AB12 = Z[2] - Z[1];
+                    let AB23 = Z[3] - Z[2];
+                    let AB34 = Z[4] - Z[3];
+                    let AB45 = Z[5] - Z[4];
+                    let AB56 = Z[6] - Z[5];
+                    let AB16 = Z[6] - Z[1];
+
+                    for (let h of HISTORY) {
+
+                        let ZH = [null, ...[...h.zahlen].sort((a, b) => a - b)];
+
+                        let countAB = 0;
+
+                        if (ZH[2] - ZH[1] === AB12) countAB++;
+                        if (ZH[3] - ZH[2] === AB23) countAB++;
+                        if (ZH[4] - ZH[3] === AB34) countAB++;
+                        if (ZH[5] - ZH[4] === AB45) countAB++;
+                        if (ZH[6] - ZH[5] === AB56) countAB++;
+
+                        if (countAB > treffer) treffer = countAB;
+                    }
+
+                    if (treffer === 1) color = "brown";
+                    if (treffer === 2) color = "lightgreen";
+                    if (treffer === 3) color = "green";
+                    if (treffer === 4) color = "pink";
+                    if (treffer === 5) color = "red";
+
+                    abstandText =
+                        AB12 + "-" +
+                        AB23 + "-" +
+                        AB34 + "-" +
+                        AB45 + "-" +
+                        AB56 + " = " +
+                        AB16;
+                }
+
+                let html = `
+<div style="margin-bottom:8px;">
+<b>${tip.length === 6
+                        ? "Kombi-Nr.: " + berechneKombiNr(tip) +
+                        " | Summe: " + tip.reduce((a, b) => a + b, 0)
+                        : "Anzahl Zahlen: " + tip.length
+                    }</b>
+</div>
+`;
+
+                let namen = ["Null", "Ein", "Zwei", "Drei", "Vier", "Fünf", "Sechs"];
+
+                for (let i = 0; i <= 6; i++) {
+
+                    html += '<div class="trow" style="display:flex; justify-content:space-between;">' +
+                        '<span>' + namen[i] + ' :</span>' +
+                        '<span style="font-weight:bold; min-width:40px; text-align:right;">' + T[i] + '</span>' +
+                        '</div>';
+
+                    if (i === 6 && tip.length === 6) {
+
+                        html += '<div class="trow" style="display:flex; justify-content:space-between;">' +
+                            '<span>Abstand (' + treffer + ') :</span>' +
+                            '<span style="font-weight:bold; color:' + color + ';">' + abstandText + '</span>' +
+                            '</div>';
+                    }
+                }
+
+                document.getElementById("tuBox").innerHTML = html;
+            }
+            function parseList(val) {
+                if (!val) return [];
+                return val.split(/[;, ]+/).map(Number).filter(x => !isNaN(x));
+            }
+
+            // ===== RANGE + LISTE =====
+            function parseRanges(val) {
+                if (!val) return [];
+
+                return val.split(",").map(part => {
+                    part = part.trim();
+
+                    if (part.includes("-")) {
+                        let [a, b] = part.split("-").map(Number);
+                        if (isNaN(a) || isNaN(b)) return null;
+                        return { von: Math.min(a, b), bis: Math.max(a, b) };
+                    } else {
+                        let n = parseInt(part);
+                        if (isNaN(n)) return null;
+                        return { von: n, bis: n };
+                    }
+
+                }).filter(x => x);
+            }
+
+            function inRanges(value, ranges) {
+                if (!ranges.length) return true;
+                return ranges.some(r => value >= r.von && value <= r.bis);
+            }
+
+
+            function clearRHF() {
+
+                saveFullState();
+
+                let types = ["eq", "le", "ge"];
+                let groups = ["t", "u"];
+
+                // 🔥 T und U löschen
+                types.forEach(type => {
+                    groups.forEach(group => {
+                        for (let i = 0; i <= 6; i++) {
+                            let el = document.getElementById(type + "_" + group + i);
+                            if (el) {
+                                el.value = "";
+                            }
+                        }
+                    });
+                });
+
+                // 🔥 GAP löschen
+                types.forEach(type => {
+                    let el = document.getElementById(type + "_gap");
+                    if (el) {
+                        el.value = "";
+                    }
+                });
+            }
+
+            function resetFilters() {
+
+                saveFullState();
+
+                let ids = ["low", "even", "zp", "endcount", "endzButtons", "nb", "waag", "senk", "rand"];
+
+                ids.forEach(id => {
+                    document.querySelectorAll("#" + id + " button.active")
+                        .forEach(btn => btn.classList.remove("active"));
+                });
+            }
+
+            function clearMainInputs() {
+
+                saveFullState(); // 🔥 zuerst speichern
+
+                let ids = [
+                    "anzahl", "abstand",
+                    "pflicht", "sperre",
+                    "kombi_von", "kombi_bis",
+                    "sum_von", "sum_bis",
+                    "gap_von", "gap_bis",
+                    "endz"
+                ];
+
+                ids.forEach(id => {
+                    let el = document.getElementById(id);
+                    if (el) {
+                        el.value = "";
+
+                    }
+                });
+
+                // Anzahl wieder setzen
+                document.getElementById("anzahl").value = "12";
+
+                activateMainInputs();
+            }
+
+            function cls() {
+                document.getElementById("out").innerHTML = "";
+
+
+                // nur bei echtem RUN (nicht bei WEITER)
+                window.state = null;
+
+                document.getElementById("debug").innerHTML = "";
+
+
+
+                document.querySelectorAll(".tippfeld input")
+                    .forEach(e => e.classList.remove("active"));
+
+                document.getElementById("status").innerHTML = "";
+                document.getElementById("loader").style.display = "none";
+
+                updateTU();
+
+
+            }
+
+            let gapSort = { col: "gap", dir: 1 };
+
+            function showGapList(sortCol) {
+
+                let out = document.getElementById("debug");
+                out.innerHTML = "";
+
+                if (!HISTORY || HISTORY.length < 2) {
+                    alert("Keine Historie geladen!");
+                    return;
+                }
+
+                if (sortCol) {
+                    if (gapSort.col === sortCol) gapSort.dir *= -1;
+                    else {
+                        gapSort.col = sortCol;
+                        gapSort.dir = 1;
+                    }
+                }
+
+                let arr = [...HISTORY].sort((a, b) => a.kombi - b.kombi);
+
+                // 🔥 Endziffer (letzte 3 Stellen) zählen
+                let endMap = {};
+
+                arr.forEach(it => {
+                    let end3 = String(it.kombi).slice(-3).padStart(3, "0");
+
+                    if (!endMap[end3]) endMap[end3] = 0;
+                    endMap[end3]++;
+                });
+
+                let rows = [];
+
+                for (let i = 1; i < arr.length; i++) {
+
+                    let gap = arr[i].kombi - arr[i - 1].kombi;
+
+                    let end3 = String(arr[i].kombi).slice(-3).padStart(3, "0");
+                    let count2 = endMap[end3] || 0;
+
+                    rows.push({
+                        gap: gap,
+                        count: 1, // jede Zeile einzeln
+                        count2: count2,
+                        end3: Number(end3),
+                        kombi: arr[i].kombi,
+                        zahlen: arr[i].zahlen
+                    });
+                }
+
+                // 🔥 echte Sortierung pro Zeile
+
+                // 🔥 fehlende Endziffern in Tabelle aufnehmen
+                for (let i = 0; i <= 999; i++) {
+
+                    // 🔥 JETZT sortieren (inkl. fehlender Werte!)
+                    rows.sort((a, b) =>
+                        (a[gapSort.col] - b[gapSort.col]) * gapSort.dir
+                    );
+
+                    let key = String(i).padStart(3, "0");
+
+                    if (!endMap[key]) {
+
+                        rows.push({
+                            gap: 0,
+                            count: 0,
+                            count2: 0,
+                            end3: Number(key),
+                            kombi: "-",
+                            zahlen: []
+                        });
+                    }
+                }
+                let html = `
+<table>
+<tr>
+<th onclick="showGapList('count')">Anzahl</th>
+<th onclick="showGapList('gap')">GAP</th>
+<th onclick="showGapList('count2')">Anzahl 2</th>
+<th onclick="showGapList('end3')">Endz (3)</th>
+<th onclick="showGapList('kombi')">Kombi</th>
+<th>Zahlen</th>
+</tr>
+`;
+
+
+
+                html
+
+                rows.forEach(r => {
+
+                    let isMissing = (r.count2 === 0);
+
+                    html += `<tr style="${isMissing ? 'background:#ffcccc;' : ''}">`;
+
+                    html += `<td>${r.count}</td>`;
+                    html += `<td>${r.gap}</td>`;
+                    html += `<td>${r.count2}</td>`;
+                    html += `<td>${String(r.end3).padStart(3, "0")}</td>`;
+                    html += `<td>${r.kombi}</td>`;
+                    html += `<td>${r.zahlen.length ? r.zahlen.join("-") : "-"}</td>`;
+
+                    html += "</tr>";
+                });
+
+
+                html += "</table>";
+
+                // 🔥 fehlende Endziffern berechnen
+                let missing = [];
+
+                for (let i = 0; i <= 999; i++) {
+                    let key = String(i).padStart(3, "0");
+                    if (!endMap[key]) {
+                        missing.push(key);
+                    }
+                }
+
+                // 🔥 Anzeige
+                html += `
+<div style="margin-top:15px; padding:10px; background:#fff; border:1px solid #ccc;">
+<b>Fehlende Endziffern (noch nie gezogen):</b><br>
+${missing.join(", ")}
+</div>
+`;
+
+                out.innerHTML = html;
+            }
+
+            function exportTXT() {
+
+                let table = document.getElementById("out");
+
+                if (!table || table.innerText.trim() === "") {
+                    alert("Keine Daten vorhanden!");
+                    return;
+                }
+
+                // 🔥 Text aus Tabelle holen
+                let text = table.innerText;
+
+                // 🔥 Datei erzeugen
+                let blob = new Blob([text], { type: "text/plain;charset=utf-8;" });
+
+                let link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "lotto_ausgabe.txt";
+
+                // 🔥 Download auslösen
+                document.body.appendChild(link);
+                link.click();
+
+                // 🔥 aufräumen
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            }
+
+            function exportCSV() {
+
+                let table = document.getElementById("out");
+
+                if (!table || table.innerText.trim() === "") {
+                    alert("Keine Daten vorhanden!");
+                    return;
+                }
+
+                let rows = table.querySelectorAll("tr");
+
+                let csv = "";
+
+                rows.forEach(r => {
+                    let cols = r.querySelectorAll("td");
+                    let line = [];
+
+                    cols.forEach(c => {
+                        line.push(c.innerText.replace(/;/g, ",")); // ; sauber halten
+                    });
+
+                    csv += line.join(";") + "\n";
+                });
+
+                let blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+                let link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "lotto_ausgabe.csv";
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+
+            function makeQR() {
+
+                let rows = document.querySelectorAll("#out tr");
+
+                if (rows.length === 0) {
+                    alert("Keine Daten vorhanden!");
+                    return;
+                }
+
+                let max = Math.min(rows.length, 96);
+
+                let text = "www.quiclo.net\nZ1 Z2 Z3 Z4 Z5 Z6 ****  T3 T4 T5 T6\n";
+
+                for (let i = 0; i < max; i++) {
+
+                    let cols = rows[i].querySelectorAll("td");
+
+                    let zahlen = [];
+
+                    for (let j = 1; j <= 6; j++) {
+                        zahlen.push(cols[j].innerText);
+                    }
+
+                    let t3 = cols[13].innerText;
+                    let t4 = cols[14].innerText;
+                    let t5 = cols[15].innerText;
+                    let t6 = cols[16].innerText;
+
+                    t3 = String(t3).padStart(3, "0");
+                    t4 = String(t4).padStart(2, "0");
+                    t5 = String(t5).padStart(2, "0");
+                    t6 = String(t6).padStart(2, "0");
+                    let line =
+                        zahlen.map(x => String(x).padStart(2, "0")).join(" ") +
+                        "   |    [ " +
+                        String(t3).padStart(3, "0") + " " +
+                        String(t4).padStart(2, "0") + " " +
+                        String(t5).padStart(2, "0") + " " +
+                        String(t6).padStart(2, "0") +
+                        "]";
+                    text += line + "\n";
+                }
+
+                let url = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(text);
+                document.getElementById("qrbox").innerHTML = "";
+                let box = document.getElementById("qrbox");
+                box.innerHTML = "<img src='" + url + "' style='image-rendering: pixelated;'>";
+            }
+            function printTable() {
+
+                let table = document.getElementById("out");
+
+                if (!table || table.innerText.trim() === "") {
+                    alert("Keine Daten vorhanden!");
+                    return;
+                }
+
+
+
+                win.document.write(`
+                                                                                <html>
+                                                                                <head>
+                                                                                    <title>Druck Lotto</title>
+                                                                                    <style>
+                                                                                        body { font-family: Arial; }
+                                                                                        table { border-collapse: collapse; width: 100%; }
+                                                                                        td, th { border: 1px solid #000; padding: 4px; text-align: center; }
+                                                                                        th { background: #eee; }
+                                                                                    </style>
+                                                                                </head>
+                                                                                <body>
+                                                                                    <h3>Lotto Ausgabe</h3>
+                                                                                    <table>${table.innerHTML}</table>
+                                                                                </body>
+                                                                                </html>
+                                                                            `);
+
+                win.document.close();
+                win.focus();
+                window.print();
+                win.close();
+            }
+
+            function undoFilters() {
+
+                if (!lastState) return;
+
+                // 🔥 Inputs zurück
+                lastState.inputs.forEach(i => {
+                    let el = document.getElementById(i.id);
+                    if (el) el.value = i.value;
+                });
+
+                // 🔥 Buttons zurück
+                lastState.buttons.forEach(b => {
+                    let btn = document.querySelector(
+                        `#${b.id} button[data-val="${b.val}"]`
+                    );
+                    if (btn) {
+                        if (b.active) btn.classList.add("active");
+                        else btn.classList.remove("active");
+                    }
+                });
+
+                // 🔥 T/U zurück
+                lastState.tu.forEach(i => {
+                    let el = document.getElementById(i.id);
+                    if (el) el.value = i.value;
+                });
+
+                activateMainInputs();
+            }
+
+            function saveAction(btn) {
+
+                undoStack.push({
+                    id: btn.parentElement.id,
+                    val: btn.dataset.val,
+                    wasActive: btn.classList.contains("active")
+                });
+
+                if (undoStack.length > 50) undoStack.shift();
+            }
+            function get(id) {
+                let v = document.getElementById(id).value.trim();
+
+                if (v === "") return null;
+
+                // 🔥 Tausenderpunkte entfernen
+                v = v.replace(/\./g, "");
+
+                let n = parseInt(v);
+                return isNaN(n) ? null : n;
+            }
+
+            function check(val, eq, le, ge) {
+
+                if (eq !== null && eq !== "" && val !== eq) return false;
+
+                if (le !== null && le !== "" && val > le) return false;
+
+                if (ge !== null && ge !== "" && val < ge) return false;
+
+                return true;
+            }
+
+            function checkAbstand(row, abList) {
+
+                if (!abList || abList.length === 0) return true;
+
+                let diffs = [];
+
+                // 🔥 nur direkte Nachbarn
+                for (let i = 0; i < row.length - 1; i++) {
+                    diffs.push(Math.abs(row[i + 1] - row[i]));
+                }
+
+                return abList.every(a => diffs.some(d => d === Number(a)));
+            }
+            function countWaagerecht(row) {
+
+                let reihen = new Set();
+
+                for (let z of row) {
+
+                    let reihe = Math.floor((z - 1) / 7);
+
+                    reihen.add(reihe);
+                }
+
+
+                return reihen.size;
+            }
+
+            // 🔥 SENKRECHT ZÄHLEN (7x7 Feld)
+            function countSenkrecht(row) {
+
+                let spalten = new Set();
+
+                for (let z of row) {
+
+                    // Spalte im 7x7 Feld berechnen
+                    let s = (z - 1) % 7;
+
+                    spalten.add(s);
+                }
+
+                return spalten.size;
+            }
+
+            // 🔥 RAND ZÄHLEN (7x7 Feld)
+            function countRand(row) {
+
+                let count = 0;
+
+                for (let z of row) {
+
+                    // obere Reihe
+                    if (z <= 7) {
+                        count++;
+                        continue;
+                    }
+
+                    // untere Reihe
+                    if (z >= 43) {
+                        count++;
+                        continue;
+                    }
+
+                    // linke Spalte
+                    if ((z - 1) % 7 === 0) {
+                        count++;
+                        continue;
+                    }
+
+                    // rechte Spalte
+                    if (z % 7 === 0) {
+                        count++;
+                        continue;
+                    }
+                }
+
+                return count;
+            }
+
+            function checkFilters(row, r) {
+
+                let pflicht = parseList(document.getElementById("pflicht").value);
+                let sperre = parseList(document.getElementById("sperre").value);
+                let abstand = parseList(document.getElementById("abstand").value);
+
+                // Abstand
+                if (abstand.length > 0) {
+                    if (!checkAbstand(row, abstand)) return false;
+                }
+
+                // Pflichtzahlen
+                for (let p of pflicht) {
+                    if (!row.includes(p)) return false;
+                }
+
+                // Ausschlusszahlen
+                for (let s of sperre) {
+                    if (row.includes(s)) return false;
+                }
+
+
+
+                // Endziffer
+                let rawEndz = document.getElementById("endz").value
+                    .replace(/\./g, "")
+                    .replace(/\s/g, "")
+                    .trim();
+
+                if (rawEndz !== "") {
+                    rawEndz = rawEndz.replace(/[^0-9?]/g, "");
+                }
+
+                function matchEndz(kombi, pattern) {
+                    if (!pattern) return true;
+
+                    let k = kombi.toString();
+                    let end = k.slice(-pattern.length);
+
+                    for (let i = 0; i < pattern.length; i++) {
+                        if (pattern[i] === "?") continue;
+                        if (pattern[i] !== end[i]) return false;
+                    }
+                    return true;
+                }
+
+                if (rawEndz !== "") {
+                    if (!matchEndz(r.kombi, rawEndz)) return false;
+                }
+
+                // Kombi
+                let kv = document.getElementById("kombi_von").value;
+                let kb = document.getElementById("kombi_bis").value;
+
+                if (kv.trim() !== "" || kb.trim() !== "") {
+
+                    let v = parseInt(kv.replace(/\./g, ""));
+                    let b = parseInt(kb.replace(/\./g, ""));
+
+                    if (isNaN(v)) v = 1;
+                    if (isNaN(b)) b = 13983816;
+
+                    v = Math.max(1, v);
+                    b = Math.min(13983816, b);
+
+                    if (v > b) {
+                        let t = v; v = b; b = t;
+                    }
+
+                    if (r.kombi < v || r.kombi > b) return false;
+                }
+
+                // ===== BUTTON FILTER =====
+
+                // ===== SUMME FILTER =====
+                let sv = document.getElementById("sum_von").value;
+                let sb = document.getElementById("sum_bis").value;
+
+                if (sv.trim() !== "" || sb.trim() !== "") {
+
+                    let v = parseInt(sv.replace(/\./g, ""));
+                    let b = parseInt(sb.replace(/\./g, ""));
+
+                    if (isNaN(v)) v = 21;   // minimale Summe
+                    if (isNaN(b)) b = 279;  // maximale Summe
+
+                    if (v > b) {
+                        let t = v; v = b; b = t;
+                    }
+
+                    if (r.SUM < v || r.SUM > b) return false;
+                }
+
+                // ===== ABWEICHUNG FILTER =====
+                let gv = document.getElementById("gap_von").value;
+                let gb = document.getElementById("gap_bis").value;
+
+                if (gv || gb) {
+
+                    let v = parseInt(gv.replace(/\./g, "")) || 0;
+                    let b = parseInt(gb.replace(/\./g, "")) || Number.MAX_SAFE_INTEGER;
+
+                    if (v > b) {
+                        let t = v; v = b; b = t;
+                    }
+
+                    if (r.ABW < v || r.ABW > b) return false;
+                }
+
+                // Tiefe Zahlen
+                let lowSel = getSelected("low");
+                if (lowSel.length > 0) {
+                    let val = countLow(row);
+                    if (!lowSel.includes(String(val))) return false;
+                }
+
+                // Gerade Zahlen
+                let evenSel = getSelected("even");
+                if (evenSel.length > 0) {
+                    let val = countEven(row);
+                    if (!evenSel.includes(String(val))) return false;
+                }
+
+                // Zehnergruppen
+                let zpSel = getSelected("zp");
+                if (zpSel.length > 0) {
+                    let val = getZehnerPattern(row);
+                    if (!zpSel.includes(val)) return false;
+                }
+
+                // Endziffern erlaubt (nur diese sind gültig)
+                let endSel = getSelected("endcount");
+
+                // 🔥 Filter nur aktiv ab 2 gewählten Endziffern
+                if (endSel.length >= 2) {
+
+                    let ends = row.map(n => n % 10);
+
+                    // jede Zahl muss eine erlaubte Endziffer haben
+                    for (let e of ends) {
+                        if (!endSel.includes(String(e))) {
+                            return false;
+                        }
+                    }
+                }
+
+                // Endziffern Muster
+                let endzSel = getSelected("endzButtons");
+                if (endzSel.length > 0) {
+                    let val = getEndPattern(row);
+                    if (!endzSel.includes(val)) return false;
+                }
+
+                // Nachbarn
+                let nbSel = getSelected("nb");
+                if (nbSel.length > 0) {
+                    let val = getNeighborPattern(row);
+                    if (!nbSel.includes(val)) return false;
+                }
+
+                // ===== WAAGERECHT FILTER =====
+                let wButtons = document.querySelectorAll("#waag button.active");
+
+                if (wButtons.length > 0) {
+
+                    let allowed = Array.from(wButtons).map(b => Number(b.dataset.val));
+
+                    let count = countWaagerecht(row);
+
+                    if (!allowed.includes(count)) return false;
+                }
+
+
+                // ===== SENKRECHT FILTER =====
+                let sButtons = document.querySelectorAll("#senk button.active");
+
+                if (sButtons.length > 0) {
+
+                    let allowed = Array.from(sButtons).map(b => Number(b.dataset.val));
+
+                    let count = countSenkrecht(row);
+
+                    if (!allowed.includes(count)) return false;
+                }
+
+                // ===== RAND FILTER =====
+                let rButtons = document.querySelectorAll("#rand button.active");
+
+                if (rButtons.length > 0) {
+
+                    let allowed = Array.from(rButtons).map(b => Number(b.dataset.val));
+
+                    let count = countRand(row);
+
+                    if (!allowed.includes(count)) return false;
+                }
+
+                return true;
+
+            }
+
+
+
+            async function start(resume = false) {
+
+                // 🔥 NUR bei RUN zurücksetzen
+                if (!resume) {
+                    window.state = {};
+                    document.getElementById("out").innerHTML = "";
+
+                    document.getElementById("debug").innerHTML = "";
+                }
+
+                if (!window.state) window.state = {};
+
+                document.getElementById("status").innerHTML = "";
+
+                if (!resume) {
+                    running = true;
+                    stopped = false;
+                } else {
+                    stopped = false;
+                }
+                document.getElementById("loader").style.display = "inline-block";
+
+                let out = document.getElementById("out");
+
+                let anzahl = parseInt(document.getElementById("anzahl").value);
+                let lastHitTime = Date.now();   // 🔥 STARTZEIT setzen
+
+                let maxTime = 30000; // 30 Sekunden
+                let count = window.state.count || 0;
+                let tries = window.state.tries || 0;
+                let triesTotal = 0;
+                let used = window.state.used ? new Set(window.state.used) : new Set();
+                while (running && count < anzahl) {
+
+                    // 🔥 STOP wenn 30 Sekunden KEIN Treffer
+                    // 🔥 STOP wenn 30 Sekunden kein Treffer
+                    if (Date.now() - lastHitTime > maxTime) {
+
+                        document.getElementById("loader").style.display = "none";
+
+                        document.getElementById("status").innerHTML =
+                            "<span style='color:red; font-size:14px;'>⚠ STOP (30s ohne Treffer)</span>";
+
+                        running = false;
+
+                        break;
+                    }
+
+                    if (tries % 50 === 0) {
+                        await new Promise(r => setTimeout(r, 0));
+                    }
+
+                    let kombi;
+                    do {
+                        kombi = randomKombi();
+                    } while (used.has(kombi));
+                    used.add(kombi);
+
+                    triesTotal++;   // 🔥 JEDER Versuch wird hier gezählt
+
+                    let row = combo(kombi).map(Number);
+
+                    tries++;   // 🔥 JEDER Versuch zählt sofort!
+                    let dist = 0;
+
+                    // 👉 Abstand korrekt berechnen (wie früher!)
+                    if (HISTORY.length > 0) {
+                        dist = Infinity;
+
+                        for (let h of HISTORY) {
+                            let d = Math.abs(kombi - h.kombi);
+                            if (d < dist) dist = d;
+                        }
+                    }
+                    // 🔥 GAP
+                    let gap = 0;
+
+                    if (HISTORY.length > 0) {
+
+                        let sorted = [...HISTORY].sort((a, b) => a.kombi - b.kombi);
+
+                        if (kombi < sorted[0].kombi) {
+                            gap = sorted[0].kombi - kombi;
+
+                        } else if (kombi > sorted[sorted.length - 1].kombi) {
+                            gap = kombi - sorted[sorted.length - 1].kombi;
+
+                        } else {
+                            for (let i = 1; i < sorted.length; i++) {
+                                if (kombi < sorted[i].kombi) {
+                                    gap = sorted[i].kombi - sorted[i - 1].kombi;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    let r = {
+                        ziehung: tries,
+                        SUM: row.reduce((a, b) => Number(a) + Number(b), 0),
+                        ABW: dist,
+                        kombi: kombi
+                    };
+
+                    if (!checkFilters(row, r)) continue;
+
+                    let T = [0, 0, 0, 0, 0, 0, 0];
+                    let U = [0, 0, 0, 0, 0, 0, 0];
+
+                    if (HISTORY && HISTORY.length > 0) {
+                        let res = calcTU(row);
+                        T = res.T;
+                        U = res.U;
+                    }
+
+                    let ok = true;
+
+                    // 👉 Filter nur anwenden wenn Historie vorhanden
+                    if (HISTORY.length > 0) {
+
+                        for (let i = 0; i <= 6; i++) {
+                            if (!check(T[i], get("eq_t" + i), get("le_t" + i), get("ge_t" + i))) ok = false;
+                            if (!check(U[i], get("eq_u" + i), get("le_u" + i), get("ge_u" + i))) ok = false;
+                        }
+
+                        // 🔥 GAP EINMAL prüfen (AUSSERHALB der Schleife!)
+                        let eqg = get("eq_gap");
+                        let leg = get("le_gap");
+                        let geg = get("ge_gap");
+
+                        let gapOK = check(gap, eqg, leg, geg);
+
+                        if (!gapOK) {
+                            document.getElementById("debug").innerHTML =
+                                "GAP passt NICHT → Wert: " + gap +
+                                " | eq: " + eqg +
+                                " | ≤: " + leg +
+                                " | ≥: " + geg;
+                        }
+
+                        if (!gapOK) ok = false;
+                    }
+
+                    if (!ok) continue;
+
+                    // 🔥 DOPPELTE VERHINDERN
+                    // 🔥 DOPPELTE VERHINDERN (SICHER)
+                    if (!row || !Array.isArray(row)) continue;
+
+                    let key = row.join(",");
+
+                    if (used.has(key)) continue;
+
+                    used.add(key);
+
+                    count++;
+
+                    lastHitTime = Date.now();   // ✅ NUR HIER!
+                    window.state.count = count;
+                    window.state.tries = tries;
+                    window.state.triesTotal = triesTotal;
+                    window.state.used = Array.from(used);
+                    document.getElementById("status").innerHTML =
+                        "Gefunden: " + count + " / " + anzahl +
+                        " | Versuche: " + triesTotal;
+                    let tr = document.createElement("tr");
+                    tr.innerHTML =
+                        "<td>" + count + "</td>" +
+
+                        row.map(z => "<td>" + z + "</td>").join("") +
+
+                        "<td>" + r.SUM + "</td>" +
+                        "<td>" + r.kombi + "</td>" +
+                        "<td>" + gap + "</td>" +
+
+                        "<td>" + T[0] + "</td>" +
+                        "<td>" + T[1] + "</td>" +
+                        "<td>" + T[2] + "</td>" +
+                        "<td>" + T[3] + "</td>" +
+                        "<td>" + T[4] + "</td>" +
+                        "<td>" + T[5] + "</td>" +
+                        "<td>" + T[6] + "</td>" +
+
+                        "<td>" + U[0] + "</td>" +
+                        "<td>" + U[1] + "</td>" +
+                        "<td>" + U[2] + "</td>" +
+                        "<td>" + U[3] + "</td>" +
+                        "<td>" + U[4] + "</td>" +
+                        "<td>" + U[5] + "</td>" +
+                        "<td>" + U[6] + "</td>";
+
+                    out.appendChild(tr);
+
+                    // 👉 STOP wenn Ziel erreicht
+                    if (count >= anzahl) {
+                        running = false;
+                        document.getElementById("loader").style.display = "none";
+                        break;
+                    }
+
+                    await new Promise(r => setTimeout(r, 2));
+                }
+            }
+            // 👉 Loader sicher ausschalten
+            document.getElementById("loader").style.display = "none";
+
+            async function loadQLM() {
+
+                let input = document.getElementById("fileInput");
+
+                if (!input.files.length) {
+                    alert("Bitte Datei auswählen!");
+                    return;
+                }
+
+                let file = input.files[0];
+
+                let buffer = await file.arrayBuffer();
+                let view = new DataView(buffer);
+
+                const TOTAL = 13983816;
+                const bitBytes = Math.ceil(TOTAL / 8);
+
+                HISTORY = [];
+
+                // 👉 1. BITFELD überspringen
+                let offset = bitBytes;
+
+                // 👉 2. Anzahl Ziehungen
+                let count = view.getUint32(offset, true);
+                offset += 4;
+
+                // 👉 3. indices lesen (ECHTE REIHENFOLGE!)
+                let indices = [];
+
+                for (let i = 0; i < count; i++) {
+                    let idx = view.getUint32(offset, true);
+                    offset += 4;
+                    indices.push(idx);
+                }
+
+                // 👉 4. HISTORY in RICHTIGER REIHENFOLGE aufbauen
+                for (let i = 0; i < indices.length; i++) {
+
+                    let kombiNr = indices[i] + 1;
+
+                    HISTORY.push({
+                        zahlen: combo(kombiNr),
+                        kombi: kombiNr,
+                        gap: 0
+                    });
+
+                }
+
+                // 🔥 GAP EINMALIG BERECHNEN (NACH DEM LADEN!)
+                let sorted = [...HISTORY].sort((a, b) => a.kombi - b.kombi);
+
+                for (let i = 0; i < sorted.length; i++) {
+
+                    let gap = 0;
+
+                    if (i > 0) {
+                        gap = sorted[i].kombi - sorted[i - 1].kombi;
+                    }
+
+                    sorted[i].gap = gap;
+                }
+
+                // 👉 zurück in HISTORY schreiben (Reihenfolge bleibt!)
+                for (let s of sorted) {
+                    let item = HISTORY.find(h => h.kombi === s.kombi);
+                    if (item) item.gap = s.gap;
+                }
+
+                // 🔥 ABSTAND1 EINMALIG BERECHNEN
+
+                // 🔥 ABSTAND1 SCHNELL BERECHNEN (O(n log n))
+
+                let sortedByKombi = [...HISTORY].sort((a, b) => a.kombi - b.kombi);
+
+                // 👉 Vorwärts
+                for (let i = 0; i < sortedByKombi.length; i++) {
+
+                    let curr = sortedByKombi[i];
+
+                    let left = (i > 0) ? Math.abs(curr.kombi - sortedByKombi[i - 1].kombi) : Infinity;
+                    let right = (i < sortedByKombi.length - 1) ? Math.abs(curr.kombi - sortedByKombi[i + 1].kombi) : Infinity;
+
+                    curr.abstand1 = Math.min(left, right);
+                }
+
+                alert("Datei.QLM geladen: " + HISTORY.length + " Ziehungen");
+
+                document.getElementById("status").innerHTML =
+                    "<span style='color:green;'>✔ Historie geladen (" +
+                    HISTORY.length +
+                    ")</span>";
+
+                showLastDraws();   // 🔥 NEU
+
+                updateTU();
+            }
+
+            document.getElementById("status").innerHTML =
+                "<span style='color:green; font-size:14px;'>✔ Historie geladen (" +
+                HISTORY.length.toLocaleString("de-DE") +
+                " Datensätze)</span>";
+
+            updateTU();
+
+            function stopRun() {
+                stopped = true;
+
+                // Loader aus
+                document.getElementById("loader").style.display = "none";
+
+                // Status anzeigen
+                document.getElementById("status").innerHTML =
+                    "<span style='color:orange; font-weight:bold;'>⏸ PAUSE aktiv</span>";
+                running = false;
+
+            }
+
+            function resumeRun() {
+
+                stopped = false;
+                running = true;   // 🔥 DAS IST DER FIX
+
+                document.getElementById("status").innerHTML = "";
+                document.getElementById("loader").style.display = "inline-block";
+
+                start(true);
+            }
+
+            document.querySelectorAll(".filterblock button").forEach(btn => {
+
+                btn.addEventListener("click", function () {
+
+                    let wasActive = !this.classList.contains("active");
+
+                    undoStack.push({
+                        id: this.parentElement.id,
+                        val: this.dataset.val,
+                        wasActive: wasActive
+                    });
+
+                });
+
+            });
+
+            // ===== AUTO FORMAT 99.999 =====
+            function formatNumberInput(e) {
+                let val = e.target.value.replace(/\./g, "").replace(/\D/g, "");
+
+                if (!val) {
+                    e.target.value = "";
+                    return;
+                }
+
+                let num = parseInt(val, 10);
+                e.target.value = num.toLocaleString("de-DE");
+            }
+
+
+
+            activateFormatting();
+
+            document.addEventListener("click", function (e) {
+
+                let el = e.target;
+
+                if (!el.closest("#tippTable")) return;
+
+                if (el.tagName !== "INPUT") return;
+
+                el.classList.toggle("active");
+
+                updateTU();
+            });
+            // alle T/U Felder aktivieren
+            function activateFormatting() {
+                document.querySelectorAll(".tu-table input").forEach(inp => {
+                    inp.addEventListener("input", formatNumberInput);
+                });
+            }
+
+            // 🔥 nur die 8 Felder steuern
+
+            // 🔥 aktivieren
+
+
+
+
+
+            // 🔥 Anzahl sicher setzen
+            document.getElementById("anzahl").value = "12";
+
+            activateMainInputs();
+            function activateMainInputs() {
+
+                let ids = [
+                    "anzahl", "abstand",
+                    "pflicht", "sperre",
+                    "kombi_von", "kombi_bis",
+                    "sum_von", "sum_bis",
+                    "gap_von", "gap_bis",
+                    "endz"
+                ];
+                ids.forEach(id => {
+
+                    let inp = document.getElementById(id);
+                    let box = inp.closest(".tabfield");
+
+                    function formatNumber(val, id) {
+
+                        // 🔥 Felder mit Mehrfacheingaben NICHT verändern
+                        if (id === "abstand" || id === "pflicht" || id === "sperre" || id === "endz") {
+                            return val; // 그대로 lassen!
+                        }
+
+                        let num = val.replace(/\./g, "").replace(/\D/g, "");
+                        if (!num) return "";
+                        return parseInt(num, 10).toLocaleString("de-DE");
+                    }
+
+                    function update() {
+
+                        // 🔥 Formatierung
+                        inp.value = formatNumber(inp.value, id);
+
+                        if (inp.value.trim() !== "") {
+                            box.style.background = "#d5f5e3";
+                            box.style.borderColor = "#27ae60";
+                        } else {
+                            box.style.background = "";
+                            box.style.borderColor = "";
+                        }
+                    }
+
+                    inp.oninput = update;
+                    update();
+                });
+            }
+
+            document.querySelectorAll(".button-group button").forEach(btn => {
+
+                btn.onclick = function () {
+                    this.classList.toggle("active");
+                };
+
+            });
+
+
+
+            function updateHistoryUI() {
+
+                let hasHist = HISTORY && HISTORY.length > 0
+
+                let tuInputs = document.querySelectorAll('.tu-table input');
+
+                let gapVon = document.getElementById("gap_von");
+                let gapBis = document.getElementById("gap_bis");
+
+                if (!hasHist) {
+                    tuInputs.forEach(inp => inp.title = "Auswertung nur mit Historie möglich");
+
+
+                    gapVon.disabled = true;
+                    gapBis.disabled = true;
+
+                    gapVon.style.background = "#f8d7da";
+                    gapBis.style.background = "#f8d7da";
+
+                    gapVon.style.borderColor = "#e74c3c";
+                    gapBis.style.borderColor = "#e74c3c";
+
+                    gapVon.title = "Trefferabstand nur mit Historie möglich";
+                    gapBis.title = "Trefferabstand nur mit Historie möglich";
+
+                } else {
+
+                    tuInputs.forEach(inp => inp.title = "");
+
+
+
+                    gapVon.disabled = false;
+                    gapBis.disabled = false;
+
+                    gapVon.style.background = "";
+                    gapBis.style.background = "";
+
+                    gapVon.style.borderColor = "";
+                    gapBis.style.borderColor = "";
+
+                    gapVon.title = "";
+                    gapBis.title = "";
+                }
+            }
+
+            function showAbstand1List(sortCol) {
+
+                let out = document.getElementById("debug");
+                out.innerHTML = "";
+
+                if (!HISTORY || HISTORY.length === 0) {
+                    out.innerHTML = "<b style='color:red'>Keine Daten vorhanden</b>";
+                    return;
+                }
+
+                if (!window.abSort) window.abSort = { col: "kombi", dir: 1 };
+
+                if (sortCol) {
+                    if (window.abSort.col === sortCol) window.abSort.dir *= -1;
+                    else {
+                        window.abSort.col = sortCol;
+                        window.abSort.dir = 1;
+                    }
+                }
+
+                let rows = [];
+
+                HISTORY.forEach(h => {
+
+                    let Z = h.zahlen;
+                    if (!Z || Z.length < 6) return;
+
+                    let AB12 = Z[1] - Z[0];
+                    let AB23 = Z[2] - Z[1];
+                    let AB34 = Z[3] - Z[2];
+                    let AB45 = Z[4] - Z[3];
+                    let AB56 = Z[5] - Z[4];
+                    let AB16 = Z[5] - Z[0];
+                    rows.push({
+                        kombi: h.kombi,
+                        zahlen: Z,
+                        AB12, AB23, AB34, AB45, AB56, AB16
+                    });
+                });
+
+                rows.sort((a, b) => {
+
+                    let dir = window.abSort.dir;
+                    let col = window.abSort.col;
+
+                    // 🔥 Kaskade für AB-Werte
+                    if (col === "AB12") {
+                        return (
+                            (a.AB12 - b.AB12) ||
+                            (a.AB23 - b.AB23) ||
+                            (a.AB34 - b.AB34) ||
+                            (a.AB45 - b.AB45) ||
+                            (a.AB56 - b.AB56)
+                        ) * dir;
+                    }
+
+                    if (col === "AB23") {
+                        return (
+                            (a.AB23 - b.AB23) ||
+                            (a.AB34 - b.AB34) ||
+                            (a.AB45 - b.AB45) ||
+                            (a.AB56 - b.AB56)
+                        ) * dir;
+                    }
+
+                    if (col === "AB34") {
+                        return (
+                            (a.AB34 - b.AB34) ||
+                            (a.AB45 - b.AB45) ||
+                            (a.AB56 - b.AB56)
+                        ) * dir;
+                    }
+
+                    if (col === "AB45") {
+                        return (
+                            (a.AB45 - b.AB45) ||
+                            (a.AB56 - b.AB56)
+                        ) * dir;
+                    }
+
+                    if (col === "AB56") {
+                        return (a.AB56 - b.AB56) * dir;
+                    }
+
+                    // Standard (Kombi)
+                    return (a[col] - b[col]) * dir;
+                });
+
+                let html = `
+<table>
+<tr>
+<th onclick="showAbstand1List('kombi')">Kombi</th>
+<th>Zahlen</th>
+<th onclick="showAbstand1List('AB12')">AB12</th>
+<th onclick="showAbstand1List('AB23')">AB23</th>
+<th onclick="showAbstand1List('AB34')">AB34</th>
+<th onclick="showAbstand1List('AB45')">AB45</th>
+<th onclick="showAbstand1List('AB56')">AB56</th>
+<th onclick="showAbstand1List('AB16')">AB16</th>
+</tr>
+`;
+
+                rows.forEach(r => {
+
+                    html += "<tr>";
+
+                    html += `<td>${r.kombi}</td>`;
+                    html += `<td>${r.zahlen.join("-")}</td>`;
+                    html += `<td>${r.AB12}</td>`;
+                    html += `<td>${r.AB23}</td>`;
+                    html += `<td>${r.AB34}</td>`;
+                    html += `<td>${r.AB45}</td>`;
+                    html += `<td>${r.AB56}</td>`;
+                    html += `<td>${r.AB16}</td>`;
+
+                    html += "</tr>";
+                });
+
+                html += "</table>";
+
+                out.innerHTML = html;
+            }
+
+            document.addEventListener("click", function (e) {
+
+                let el = e.target;
+
+                if (!el.closest("#tippTable")) return;
+
+                if (el.tagName !== "INPUT") return;
+
+                el.classList.toggle("active");
+
+                updateTU();   // 👉 WICHTIG!
+            });
+            document.addEventListener("click", function (e) {
+
+                let el = e.target;
+
+                // nur Inputs im Tippfeld
+                if (!el.closest(".tippfeld")) return;
+                if (el.tagName !== "INPUT") return;
+
+                // aktivieren/deaktivieren
+                el.classList.toggle("active");
+
+                // immer TU aktualisieren
+                updateTU();
+            });
+
+            // 🔥 LETZTE 10 ZIEHUNGEN IM QR-FELD ANZEIGEN
+            function showLastDraws() {
+
+                let box = document.getElementById("qrbox");
+
+                if (!HISTORY || HISTORY.length === 0) {
+                    box.innerHTML = "<span style='color:#999;'>Keine Historie geladen</span>";
+                    return;
+                }
+                let html = "<div style='font-size:13px; line-height:1.6; font-family:Arial, sans-serif;'>";
+
+
+                let start = Math.max(0, HISTORY.length - 10);
+
+                for (let i = HISTORY.length - 1; i >= start; i--) {
+
+                    let h = HISTORY[i];
+
+                    html +=
+                        "<div style='display:flex; justify-content:space-between; border-bottom:1px solid #ddd; padding:2px 0;'>" +
+
+                        // 👉 Zahlen sauber und stabil (OHNE span pro Zahl)
+
+                        "<span style='flex:1; text-align:left;'>" +
+                        h.zahlen.map(n => n.toString().padStart(2, " ")).join(" ") +
+                        "</span>" +
+                        // 👉 Trennstrich
+                        "<span style='padding:0 6px;'>|</span>" +
+
+                        // 👉 Kombi (gleiche Schrift, NICHT fett)
+                        "<span style='min-width:80px; text-align:right;;'>" +
+                        h.kombi +
+                        "</span>" +
+
+                        "</div>";
+                }
+
+                html += "</div>";
+
+                box.innerHTML = html;
+            }
+
+            function showInfo() {
+                document.getElementById("infoPopup").style.display = "block";
+            }
+
+            function hideInfo() {
+                document.getElementById("infoPopup").style.display = "none";
+            }
+
+        </script>
+
+
+    </div></body></html>
